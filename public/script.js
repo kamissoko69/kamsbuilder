@@ -50,7 +50,7 @@ button.addEventListener("click", async () => {
     try {
 
 
-        const response = await fetch("/generate", {
+        const response = await fetch("https://kamsbuilder.onrender.com/generate", {
 
             method: "POST",
 
@@ -92,7 +92,7 @@ button.addEventListener("click", async () => {
             </p>
 
 
-            <a href="${data.download}" 
+            <a href="https://kamsbuilder.onrender.com/download" 
             class="download-btn">
 
             📦 Télécharger mon site
