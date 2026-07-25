@@ -1,81 +1,87 @@
 import axios from "axios";
+import dotenv from "dotenv";
 
+dotenv.config();
 
-export async function generateWebsite(idea){
+export async function generateWebsite(idea) {
 
-
-const prompt = `
-
+    const prompt = `
 Tu es Kam's AI Builder.
+
+Tu es un développeur web expert.
 
 Crée un site web complet.
 
-Projet :
-
-${idea}
-
-
-Tu dois retourner EXACTEMENT ce format :
-
+Retourne UNIQUEMENT :
 
 ---INDEX---
-
-TON CODE HTML ICI
-
+(le code HTML)
 
 ---STYLE---
-
-TON CODE CSS ICI
-
+(le code CSS)
 
 ---SCRIPT---
+(le code JavaScript)
 
-TON CODE JAVASCRIPT ICI
-
-
-Ne mets aucune explication.
-
+Aucune explication.
 `;
 
+    try {
 
+        const response = await axios.post(
 
-const response = await axios.post(
+            "https://openrouter.ai/api/v1/chat/completions",
 
-"https://api.mistral.ai/v1/chat/completions",
+            {
 
-{
+                model: "cohere/north-mini-code:free",
 
-model:"codestral-latest",
+                messages: [
 
-messages:[
-{
-role:"user",
-content:prompt
-}
-],
+                    {
+                        role: "system",
+                        content: prompt
+                    },
 
-temperature:0.2
+                    {
+                        role: "user",
+                        content: idea
+                    }
 
-},
+                ],
 
-{
+                temperature: 0.6
 
-headers:{
+            },
 
-Authorization:
-`Bearer ${process.env.MISTRAL_API_KEY}`,
+            {
 
-"Content-Type":"application/json"
+                headers: {
 
-}
+                    Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
 
-}
+                    "Content-Type": "application/json",
 
-);
+                    "HTTP-Referer": "https://kamsbuilder.onrender.com",
 
+                    "X-Title": "Kam's AI Builder"
 
+                }
 
-return response.data.choices[0].message.content;
+            }
 
+        );
+
+        return response.data.choices[0].message.content;
+
+    }
+
+    catch(err){
+
+        console.log(err.response?.data || err.message);
+
+        throw err;
+
+    }
 
 }
