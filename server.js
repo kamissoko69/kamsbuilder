@@ -22,52 +22,48 @@ app.use(express.json());
 // Servir le frontend
 app.use(express.static(path.join(__dirname, "public")));
 
-// Génération IA
+// Génération IA (affiche le code brut)
 app.post("/generate", async (req, res) => {
+  try {
+    const { idea } = req.body;
 
-    try {
-
-        const { idea } = req.body;
-
-        if (!idea) {
-            return res.status(400).json({
-                success: false,
-                error: "Aucune idée reçue."
-            });
-        }
-
-        console.log("========== NOUVELLE DEMANDE ==========");
-        console.log(idea);
-
-        const result = await generateWebsite(idea);
-
-        console.log("========== RÉPONSE IA ==========");
-        console.log(result);
-        console.log("================================");
-
-        res.json({
-            success: true,
-            code: result
-        });
-
-    } catch (error) {
-
-        console.error(error.response?.data || error.message);
-
-        res.status(500).json({
-            success: false,
-            error: "Erreur pendant la génération IA."
-        });
-
+    if (!idea) {
+      return res.status(400).json({
+        success: false,
+        error: "Aucune idée reçue."
+      });
     }
 
+    console.log("========== NOUVELLE DEMANDE ==========");
+    console.log(idea);
+
+    const result = await generateWebsite(idea);
+
+    console.log("========== RÉPONSE IA ==========");
+    console.log(result);
+    console.log("================================");
+
+    // Retourne directement le code généré
+    res.json({
+      success: true,
+      code: result
+    });
+
+  } catch (error) {
+    console.error(error.response?.data || error.message);
+
+    res.status(500).json({
+      success: false,
+      error: "Erreur pendant la génération IA."
+    });
+  }
 });
 
 // Route principale
 app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 Kam's AI Builder lancé sur http://localhost:${PORT}`);
+  console.log(`🚀 Kam's AI Builder lancé sur http://localhost:${PORT}`);
 });
