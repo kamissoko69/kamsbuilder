@@ -64,10 +64,12 @@ Retourne uniquement les trois sections.
     console.log("========== RAW RESPONSE ==========");
     console.log(response.data);
 
-    const choice = response.data.choices[0];
+    const choice = response.data.choices?.[0] || {};
     const result =
       choice.message?.content ||
       choice.messages?.[0]?.content ||
+      choice.delta?.content ||
+      response.data.output_text ||
       "⚠️ Pas de contenu généré";
 
     return result;
