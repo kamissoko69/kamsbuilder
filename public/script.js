@@ -24,15 +24,18 @@ button.addEventListener("click", async () => {
   `;
 
   try {
-    const response = await fetch("https://kamsbuilder.onrender.com/generate", {
+    console.log("➡️ Envoi de l'idée au serveur :", idea);
+
+    const response = await fetch("/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ idea })
     });
 
     const data = await response.json();
+    console.log("⬅️ Réponse serveur :", data);
 
-    if (data.success) {
+    if (data.success && data.code) {
       statusBox.innerHTML = `
         <div class="success">
           <h3>✅ Ton site est prêt !</h3>
@@ -43,10 +46,10 @@ ${data.code}
         </div>
       `;
     } else {
-      statusBox.innerHTML = "❌ Une erreur est arrivée.";
+      statusBox.innerHTML = "❌ Une erreur est arrivée (aucun code reçu).";
     }
   } catch (error) {
-    console.log(error);
+    console.error("Erreur côté client :", error);
     statusBox.innerHTML = "❌ Impossible de contacter le serveur IA.";
   }
 
