@@ -15,6 +15,9 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Vérification de la clé API
+console.log("OPENROUTER_API_KEY chargé :", process.env.OPENROUTER_API_KEY ? "✅" : "❌");
+
 // Middlewares
 app.use(cors());
 app.use(express.json());
@@ -22,7 +25,7 @@ app.use(express.json());
 // Servir le frontend
 app.use(express.static(path.join(__dirname, "public")));
 
-// Génération IA (affiche le code brut)
+// Génération IA
 app.post("/generate", async (req, res) => {
   try {
     const { idea } = req.body;
@@ -43,13 +46,13 @@ app.post("/generate", async (req, res) => {
     console.log(result);
     console.log("================================");
 
-    // Retourne directement le code généré
     res.json({
       success: true,
       code: result
     });
 
   } catch (error) {
+    console.error("===== ERREUR BACKEND =====");
     console.error(error.response?.data || error.message);
 
     res.status(500).json({
