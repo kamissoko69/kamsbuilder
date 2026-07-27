@@ -4,8 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export async function generateWebsite(idea) {
-
-    const prompt = `
+  const prompt = `
 Tu es Kam's AI Builder.
 
 Tu es un développeur Front-End senior.
@@ -44,68 +43,47 @@ Ne mets pas \`\`\`html, \`\`\`css ou \`\`\`javascript.
 Retourne uniquement les trois sections.
 `;
 
-    try {
+  try {
+    const response = await axios.post(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        model: "cohere/north-mini-code:free",
+        messages: [
+          {
+            role: "system",
+            content: prompt
+          },
+          {
+            role: "user",
+            content: idea
+          }
+        ],
+        temperature: 0.6,
+        max_tokens: 12000
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://kamsbuilder.onrender.com",
+          "X-Title": "Kam's AI Builder"
+        }
+      }
+    );
 
-        const response = await axios.post(
+    console.log("========== RAW RESPONSE ==========");
+    console.log(response.data);
 
-            "https://openrouter.ai/api/v1/chat/completions",
+    const choice = response.data.choices[0];
+    const result =
+      choice.message?.content ||
+      choice.messages?.[0]?.content ||
+      "⚠️ Pas de contenu généré";
 
-            {
-
-                model: "cohere/north-mini-code:free",
-
-                messages: [
-
-                    {
-                        role: "system",
-                        content: prompt
-                    },
-
-                    {
-                        role: "user",
-                        content: idea
-                    }
-
-                ],
-
-                temperature: 0.6,
-
-                max_tokens: 12000
-
-            },
-
-            {
-
-                headers: {
-
-                    Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-
-                    "Content-Type": "application/json",
-
-                    "HTTP-Referer": "https://kamsbuilder.onrender.com",
-
-                    "X-Title": "Kam's AI Builder"
-
-                }
-
-            }
-
-        );
-
-        const result = response.data.choices[0].message.content;
-
-        return result;
-
-    }
-
-    catch (err) {
-
-        console.error("===== ERREUR OPENROUTER =====");
-
-        console.error(err.response?.data || err.message);
-
-        throw err;
-
-    }
-
+    return result;
+  } catch (err) {
+    console.error("===== ERREUR OPENROUTER =====");
+    console.error(err.response?.data || err.message);
+    throw err;
+  }
 }
