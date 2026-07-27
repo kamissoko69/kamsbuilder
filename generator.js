@@ -43,7 +43,7 @@ Retourne uniquement les trois sections.
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "cohere/north-mini-code:free",
+        model: "openai/gpt-4o-mini", // modèle plus fiable
         messages: [
           { role: "system", content: prompt },
           { role: "user", content: idea }
@@ -65,14 +65,22 @@ Retourne uniquement les trois sections.
     console.log(response.data);
 
     const choice = response.data.choices?.[0] || {};
-    const result =
+    const rawText =
       choice.message?.content ||
-      choice.messages?.[0]?.content ||
       choice.delta?.content ||
       response.data.output_text ||
-      "⚠️ Pas de contenu généré";
+      "";
 
-    return result;
+    // Découpage en sections
+    const indexMatch = rawText.match(/---INDEX---([\s\S]*?)---STYLE---/);
+    const styleMatch = rawText.match(/---STYLE---([\s\S]*?)---SCRIPT---/);
+    const scriptMatch = rawText.match(/---SCRIPT---([\s\S]*)/);
+
+    return {
+      index: indexMatch ? indexMatch[1].trim() : "",
+      style: styleMatch ? styleMatch[1].trim() : "",
+      script: scriptMatch ? scriptMatch[1].trim() : ""
+    };
   } catch (err) {
     console.error("===== ERREUR OPENROUTER =====");
     console.error(err.response?.data || err.message);
