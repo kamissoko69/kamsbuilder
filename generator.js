@@ -6,17 +6,13 @@ dotenv.config();
 export async function generateWebsite(idea) {
   const prompt = `
 Tu es Kam's AI Builder.
-
 Tu es un développeur Front-End senior.
-
 Ta mission est de créer un site web professionnel à partir de la demande de l'utilisateur.
 
 Projet :
-
 ${idea}
 
 Le site doit être :
-
 - Moderne
 - Responsive
 - Professionnel
@@ -49,14 +45,8 @@ Retourne uniquement les trois sections.
       {
         model: "cohere/north-mini-code:free",
         messages: [
-          {
-            role: "system",
-            content: prompt
-          },
-          {
-            role: "user",
-            content: idea
-          }
+          { role: "system", content: prompt },
+          { role: "user", content: idea }
         ],
         temperature: 0.6,
         max_tokens: 12000
