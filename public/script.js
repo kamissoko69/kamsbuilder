@@ -24,8 +24,6 @@ button.addEventListener("click", async () => {
   `;
 
   try {
-    console.log("➡️ Envoi de l'idée au serveur :", idea);
-
     const response = await fetch("/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -33,23 +31,34 @@ button.addEventListener("click", async () => {
     });
 
     const data = await response.json();
-    console.log("⬅️ Réponse serveur :", data);
 
-    if (data.success && data.code) {
+    if (data.success) {
       statusBox.innerHTML = `
         <div class="success">
           <h3>✅ Ton site est prêt !</h3>
           <p>Kam's AI Builder a généré ton projet.</p>
-          <pre style="background:#111;color:#0f0;padding:1em;overflow:auto;max-height:400px;">
-${data.code}
+
+          <h4>index.html</h4>
+          <pre style="background:#111;color:#0f0;padding:1em;overflow:auto;max-height:300px;">
+${data.index}
+          </pre>
+
+          <h4>style.css</h4>
+          <pre style="background:#111;color:#0f0;padding:1em;overflow:auto;max-height:300px;">
+${data.style}
+          </pre>
+
+          <h4>script.js</h4>
+          <pre style="background:#111;color:#0f0;padding:1em;overflow:auto;max-height:300px;">
+${data.script}
           </pre>
         </div>
       `;
     } else {
-      statusBox.innerHTML = "❌ Une erreur est arrivée (aucun code reçu).";
+      statusBox.innerHTML = "❌ Une erreur est arrivée.";
     }
   } catch (error) {
-    console.error("Erreur côté client :", error);
+    console.error(error);
     statusBox.innerHTML = "❌ Impossible de contacter le serveur IA.";
   }
 
