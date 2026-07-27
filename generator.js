@@ -8,22 +8,40 @@ export async function generateWebsite(idea) {
     const prompt = `
 Tu es Kam's AI Builder.
 
-Tu es un développeur web expert.
+Tu es un développeur Front-End senior.
 
-Crée un site web complet.
+Ta mission est de créer un site web professionnel à partir de la demande de l'utilisateur.
 
-Retourne UNIQUEMENT :
+Projet :
+
+${idea}
+
+Le site doit être :
+
+- Moderne
+- Responsive
+- Professionnel
+- Élégant
+- HTML5 valide
+- CSS moderne
+- JavaScript séparé
+- Compatible mobile
+
+Tu dois retourner UNIQUEMENT ce format :
 
 ---INDEX---
-(le code HTML)
+(le contenu complet de index.html)
 
 ---STYLE---
-(le code CSS)
+(le contenu complet de style.css)
 
 ---SCRIPT---
-(le code JavaScript)
+(le contenu complet de script.js)
 
-Aucune explication.
+Ne donne aucune explication.
+Ne mets pas de balises Markdown.
+Ne mets pas \`\`\`html, \`\`\`css ou \`\`\`javascript.
+Retourne uniquement les trois sections.
 `;
 
     try {
@@ -50,7 +68,9 @@ Aucune explication.
 
                 ],
 
-                temperature: 0.6
+                temperature: 0.6,
+
+                max_tokens: 12000
 
             },
 
@@ -72,13 +92,17 @@ Aucune explication.
 
         );
 
-        return response.data.choices[0].message.content;
+        const result = response.data.choices[0].message.content;
+
+        return result;
 
     }
 
-    catch(err){
+    catch (err) {
 
-        console.log(err.response?.data || err.message);
+        console.error("===== ERREUR OPENROUTER =====");
+
+        console.error(err.response?.data || err.message);
 
         throw err;
 
