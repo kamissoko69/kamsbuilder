@@ -40,20 +40,42 @@ button.addEventListener("click", async () => {
 
           <h4>index.html</h4>
           <pre style="background:#111;color:#0f0;padding:1em;overflow:auto;max-height:300px;">
-${data.index}
+${data.index || "⚠️ Aucun contenu reçu pour index.html"}
           </pre>
 
           <h4>style.css</h4>
           <pre style="background:#111;color:#0f0;padding:1em;overflow:auto;max-height:300px;">
-${data.style}
+${data.style || "⚠️ Aucun contenu reçu pour style.css"}
           </pre>
 
           <h4>script.js</h4>
           <pre style="background:#111;color:#0f0;padding:1em;overflow:auto;max-height:300px;">
-${data.script}
+${data.script || "⚠️ Aucun contenu reçu pour script.js"}
           </pre>
+
+          <button id="downloadBtn" class="download-btn">📦 Télécharger mon site</button>
         </div>
       `;
+
+      // Ajout du téléchargement automatique en ZIP
+      const downloadBtn = document.querySelector("#downloadBtn");
+      downloadBtn.addEventListener("click", () => {
+        const zipContent = {
+          "index.html": data.index,
+          "style.css": data.style,
+          "script.js": data.script
+        };
+
+        const blob = new Blob([JSON.stringify(zipContent, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "site.json"; // tu peux remplacer par un vrai ZIP plus tard
+        a.click();
+
+        URL.revokeObjectURL(url);
+      });
     } else {
       statusBox.innerHTML = "❌ Une erreur est arrivée.";
     }
