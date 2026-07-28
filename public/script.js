@@ -39,13 +39,27 @@ button.addEventListener("click", async () => {
           <p>Les fichiers ont été générés dans le dossier <b>output/</b>.</p>
 
           <button id="downloadAllBtn" class="download-btn">📦 Télécharger tout le projet</button>
+          <button id="previewBtn" class="preview-btn">👀 Voir un aperçu</button>
+
+          <div id="previewBox" style="margin-top:20px; border:1px solid #444; height:400px; overflow:auto;">
+            <p style="text-align:center;">Clique sur "Voir un aperçu" pour afficher ton site ici.</p>
+          </div>
         </div>
       `;
 
       // 🚀 Bouton pour télécharger tout le projet en ZIP
       const downloadAllBtn = document.querySelector("#downloadAllBtn");
       downloadAllBtn.addEventListener("click", () => {
-        window.location.href = "/download-all"; // déclenche le téléchargement du ZIP
+        window.location.href = "/download-all";
+      });
+
+      // 👀 Bouton pour afficher l’aperçu
+      const previewBtn = document.querySelector("#previewBtn");
+      previewBtn.addEventListener("click", () => {
+        const previewBox = document.querySelector("#previewBox");
+        previewBox.innerHTML = `
+          <iframe src="/preview/index.html" style="width:100%; height:100%; border:none;"></iframe>
+        `;
       });
     } else {
       statusBox.innerHTML = "❌ Une erreur est arrivée.";
