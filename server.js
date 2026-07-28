@@ -40,17 +40,15 @@ app.post("/generate", async (req, res) => {
     console.log("========== NOUVELLE DEMANDE ==========");
     console.log(idea);
 
-    const files = await generateWebsite(idea);
+    const result = await generateWebsite(idea);
 
     console.log("========== RÉPONSE IA ==========");
-    console.log(files);
+    console.log(result);
     console.log("================================");
 
     res.json({
       success: true,
-      index: files.index,
-      style: files.style,
-      script: files.script
+      code: result
     });
 
   } catch (error) {
