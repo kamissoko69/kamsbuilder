@@ -53,28 +53,39 @@ ${data.style || "⚠️ Aucun contenu reçu pour style.css"}
 ${data.script || "⚠️ Aucun contenu reçu pour script.js"}
           </pre>
 
-          <button id="downloadBtn" class="download-btn">📦 Télécharger mon site</button>
+          <button id="downloadBtn" class="download-btn">📦 Télécharger mon site (ZIP)</button>
         </div>
       `;
 
-      // Ajout du téléchargement automatique en ZIP
+      // 🚀 Téléchargement ZIP via backend
       const downloadBtn = document.querySelector("#downloadBtn");
-      downloadBtn.addEventListener("click", () => {
-        const zipContent = {
-          "index.html": data.index,
-          "style.css": data.style,
-          "script.js": data.script
-        };
+      downloadBtn.addEventListener("click", async () => {
+        try {
+          const zipResponse = await fetch("/download-zip", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ idea })
+          });
 
-        const blob = new Blob([JSON.stringify(zipContent, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
+          if (!zipResponse.ok) {
+            throw new Error("Erreur lors du téléchargement du ZIP");
+          }
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "site.json"; // tu peux remplacer par un vrai ZIP plus tard
-        a.click();
+          const blob = await zipResponse.blob();
+          const url = window.URL.createObjectURL(blob);
 
-        URL.revokeObjectURL(url);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "project.zip";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          window.URL.revokeObjectURL(url);
+        } catch (error) {
+          console.error("Erreur frontend ZIP:", error.message);
+          alert("Impossible de télécharger le ZIP.");
+        }
       });
     } else {
       statusBox.innerHTML = "❌ Une erreur est arrivée.";
