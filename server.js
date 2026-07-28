@@ -58,10 +58,14 @@ app.get("/download-all", (req, res) => {
   archive.finalize();
 });
 
-// Servir le frontend
+// 👀 Route pour prévisualiser les fichiers directement
+app.use("/preview", express.static(outputDir));
+
+// Servir le frontend (public/)
 app.use(express.static(path.join(__dirname, "public")));
 
 app.listen(PORT, () => {
   console.log(`🚀 Kam's AI Builder lancé sur http://localhost:${PORT}`);
   console.log(`📂 Fichiers disponibles sur http://localhost:${PORT}/download-all`);
+  console.log(`👀 Aperçu disponible sur http://localhost:${PORT}/preview/index.html`);
 });
