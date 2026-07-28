@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import archiver from "archiver"; // 📦 pour créer un ZIP
 import { generateWebsite } from "./generator.js";
 
 dotenv.config();
@@ -45,10 +46,22 @@ app.post("/generate", async (req, res) => {
   }
 });
 
-// 📂 Rendre le dossier output accessible en téléchargement
-app.use("/download", express.static(outputDir));
+// 🚀 Route pour télécharger tout le projet en ZIP
+app.get("/download-all", (req, res) => {
+  const zipName = "project.zip";
+  res.setHeader("Content-Disposition", `attachment; filename=${zipName}`);
+  res.setHeader("Content-Type", "application/zip");
+
+  const archive = archiver("zip");
+  archive.pipe(res);
+  archive.directory(outputDir, false); // ajoute tout le dossier output/
+  archive.finalize();
+});
+
+// Servir le frontend
+app.use(express.static(path.join(__dirname, "public")));
 
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur lancé sur http://localhost:${PORT}`);
-  console.log(`📂 Fichiers disponibles sur http://localhost:${PORT}/download`);
+  console.log(`🚀 Kam's AI Builder lancé sur http://localhost:${PORT}`);
+  console.log(`📂 Fichiers disponibles sur http://localhost:${PORT}/download-all`);
 });
