@@ -38,14 +38,15 @@ button.addEventListener("click", async () => {
           <h3>✅ Ton site est prêt !</h3>
           <p>Les fichiers ont été générés dans le dossier <b>output/</b>.</p>
 
-          <h4>📂 Téléchargements directs :</h4>
-          <ul>
-            <li><a href="/download/index.html" target="_blank">index.html</a></li>
-            <li><a href="/download/style.css" target="_blank">style.css</a></li>
-            <li><a href="/download/script.js" target="_blank">script.js</a></li>
-          </ul>
+          <button id="downloadAllBtn" class="download-btn">📦 Télécharger tout le projet</button>
         </div>
       `;
+
+      // 🚀 Bouton pour télécharger tout le projet en ZIP
+      const downloadAllBtn = document.querySelector("#downloadAllBtn");
+      downloadAllBtn.addEventListener("click", () => {
+        window.location.href = "/download-all"; // déclenche le téléchargement du ZIP
+      });
     } else {
       statusBox.innerHTML = "❌ Une erreur est arrivée.";
     }
