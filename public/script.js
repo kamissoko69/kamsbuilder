@@ -36,57 +36,16 @@ button.addEventListener("click", async () => {
       statusBox.innerHTML = `
         <div class="success">
           <h3>✅ Ton site est prêt !</h3>
-          <p>Kam's AI Builder a généré ton projet.</p>
+          <p>Les fichiers ont été générés dans le dossier <b>output/</b>.</p>
 
-          <h4>index.html</h4>
-          <pre style="background:#111;color:#0f0;padding:1em;overflow:auto;max-height:300px;">
-${data.index || "⚠️ Aucun contenu reçu pour index.html"}
-          </pre>
-
-          <h4>style.css</h4>
-          <pre style="background:#111;color:#0f0;padding:1em;overflow:auto;max-height:300px;">
-${data.style || "⚠️ Aucun contenu reçu pour style.css"}
-          </pre>
-
-          <h4>script.js</h4>
-          <pre style="background:#111;color:#0f0;padding:1em;overflow:auto;max-height:300px;">
-${data.script || "⚠️ Aucun contenu reçu pour script.js"}
-          </pre>
-
-          <button id="downloadBtn" class="download-btn">📦 Télécharger mon site (ZIP)</button>
+          <h4>📂 Téléchargements directs :</h4>
+          <ul>
+            <li><a href="/download/index.html" target="_blank">index.html</a></li>
+            <li><a href="/download/style.css" target="_blank">style.css</a></li>
+            <li><a href="/download/script.js" target="_blank">script.js</a></li>
+          </ul>
         </div>
       `;
-
-      // 🚀 Téléchargement ZIP via backend
-      const downloadBtn = document.querySelector("#downloadBtn");
-      downloadBtn.addEventListener("click", async () => {
-        try {
-          const zipResponse = await fetch("/download-zip", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ idea })
-          });
-
-          if (!zipResponse.ok) {
-            throw new Error("Erreur lors du téléchargement du ZIP");
-          }
-
-          const blob = await zipResponse.blob();
-          const url = window.URL.createObjectURL(blob);
-
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "project.zip";
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-
-          window.URL.revokeObjectURL(url);
-        } catch (error) {
-          console.error("Erreur frontend ZIP:", error.message);
-          alert("Impossible de télécharger le ZIP.");
-        }
-      });
     } else {
       statusBox.innerHTML = "❌ Une erreur est arrivée.";
     }
